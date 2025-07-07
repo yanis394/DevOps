@@ -8,7 +8,7 @@ MYSQL_ROOT_PASSWORD="rootpass"
 DB_NAME="mabase"
 DB_USER="webuser"
 DB_PASSWORD="superpassword"
-WEB_IP="192.168.44.102"  
+WEB_IP="192.168.44.101"  
 
 echo "🔒 Configuration du mot de passe root..."
 mysql -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('${MYSQL_ROOT_PASSWORD}'); FLUSH PRIVILEGES;"

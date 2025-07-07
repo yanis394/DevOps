@@ -1,5 +1,5 @@
 <?php
-$servername = "192.168.85.101";  // IP de ta VM bd
+$servername = "192.168.44.102";  // IP de ta VM bd
 $username = "webuser";
 $password = "superpassword";
 $dbname = "mabase";
