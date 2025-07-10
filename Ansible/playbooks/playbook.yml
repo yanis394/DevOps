@@ -1,0 +1,4 @@
+- name: Déployer Apache2 sur le serveur web avec PHP
+  hosts: all
+  become: true
+  role: apache

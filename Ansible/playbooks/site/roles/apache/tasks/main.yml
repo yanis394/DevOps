@@ -1,0 +1,30 @@
+- name: installation apache2 et php
+  apt:
+    name:
+      - apache2
+      - php
+      - libapache2-mod-php
+    state: present
+    update_cache: yes
+  tags: installation
+
+- name: démarrage de apache2
+  service:
+    name: apache2
+    state: started
+    enabled: yes
+  tags: services
+
+- name: activation du module php sur apache2
+  shell: a2enmod php*
+  notify:
+    - Restart apache2
+  tags: services
+
+- name: Mise en place d'une page HTML
+  copy:
+    src: /home/vagrant/ansibletest/playbooks/roles/apache/files/index.html
+    dest: "{{ site_client }}"
+    owner: www-data
+    group: www-data
+  tags: config

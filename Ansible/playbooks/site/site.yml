@@ -1,0 +1,6 @@
+- name: Déployer un server web Apache
+  hosts: worker
+  become: true
+
+  roles:
+    - apache
