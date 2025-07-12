@@ -1,0 +1,52 @@
+pipeline {
+agent any
+
+    environment {
+        GIT_REPO = 'https://github.com/adeonir/boilerplate-react-vite.git'
+        BUILD_DIR = 'dist'
+        REMOTE_USER = 'vagrant'
+        REMOTE_HOST = '192.168.56.20'
+        REMOTE_PATH = '/var/www/html/app'
+        SSH_KEY_PATH = '/var/jenkins_home/.ssh/apache_key'
+    }
+
+    stages {
+        stage('Cloner le repo') {
+            steps {
+                git url: "${GIT_REPO}", branch: 'main'
+            }
+        }
+
+        stage('Installer dépendances & build') {
+            steps {
+
+                    sh 'npm install --force'
+                    sh 'npm run test'
+                    sh 'npm run build'
+
+            }
+        }
+
+        stage('Nettoyer le dossier distant et déployer') {
+    steps {
+        sh """
+            ssh -i ${SSH_KEY_PATH} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} \\
+                "sudo rm -rf ${REMOTE_PATH} && sudo mkdir -p ${REMOTE_PATH} && sudo chown -R ${REMOTE_USER}:${REMOTE_USER} ${REMOTE_PATH}"
+
+            scp -i ${SSH_KEY_PATH} -o StrictHostKeyChecking=no -r ${BUILD_DIR}/* ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_PATH}
+        """
+    }
+
+}
+
+    }
+        post {
+            success{
+                echo 'deploiment réussi'
+            }
+            failure {
+                echo 'Echec du déploiment'
+            }
+        }
+
+    }

@@ -1,0 +1,46 @@
+- name: installation de apache2
+  apt:
+    name: apache2
+    state: present
+    update_cache: yes
+  tags:
+    - install
+    - web
+
+- name: démarrage du service apache2
+  service:
+    name: apache2
+    state: started
+    enabled: yes
+  tags:
+    - start_services
+    - web
+
+- name: Ajouter le port 3000 à Apache
+  lineinfile:
+    path: /etc/apache2/ports.conf
+    line: "Listen 3000"
+    state: present
+  notify: restart apache
+
+- name: Copier le fichier de configuration VirtualHost
+  copy:
+    src: react/react-app.conf
+    dest: /etc/apache2/sites-available/react-app.conf
+  notify: restart apache
+
+- name: Activer le site react-app
+  command: a2ensite react-app.conf
+  notify: restart apache
+
+- name: Désactiver le site par défaut
+  command: a2dissite 000-default.conf
+  notify: restart apache
+
+- name: Copier l'application React buildée
+  copy:
+    src: app/
+    dest: /var/www/html/app/
+    owner: www-data
+    group: www-data
+    mode: "0755"
