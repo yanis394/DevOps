@@ -1,0 +1,17 @@
+- name: Installation d'apache2
+  apt:
+    name: apache2
+    state: present
+    update_cache: yes
+  tags:
+    - install
+    - web
+
+- name: Démarrage du service apache2
+  service:
+    name: apache2
+    state: started
+    enabled: yes
+  tags:
+    - start_services
+    - web
